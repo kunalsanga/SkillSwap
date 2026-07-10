@@ -50,6 +50,8 @@ model User {
   banHistory       BanHistory[]
 
   @@index([email])
+  @@index([location])
+  @@index([availability])
 }
 
 model Skill {
