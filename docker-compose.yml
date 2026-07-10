@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: skillswap-db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: skillswap
+    ports:
+      - "5432:5432"
+    volumes:
+      - skillswap-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user -d skillswap"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+    container_name: skillswap-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/prisma:/app/prisma
+      - ./backend/.env:/app/.env
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/skillswap?schema=public
+      - NODE_ENV=development
+    depends_on:
+      db:
+        condition: service_healthy
+    command: sh -c "npx prisma generate && npx prisma db push && npm run dev"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: skillswap-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+      - ./frontend/vite.config.js:/app/vite.config.js
+      - ./frontend/tailwind.config.js:/app/tailwind.config.js
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+
+volumes:
+  skillswap-pgdata:
