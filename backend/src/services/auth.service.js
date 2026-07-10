@@ -21,6 +21,9 @@ const userSelect = {
       id: true,
       skillId: true,
       type: true,
+      category: true,
+      experience: true,
+      description: true,
       skill: {
         select: {
           id: true,

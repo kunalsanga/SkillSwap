@@ -21,6 +21,7 @@ const authRoutes = require('./routes/auth.routes');
 const userRoutes = require('./routes/user.routes');
 const swapRoutes = require('./routes/swap.routes');
 const swapsRouter = require('./routes/swaps');
+const userSkillRouter = require('./routes/userSkill.routes');
 const ratingRoutes = require('./routes/rating.routes');
 const adminRoutes = require('./routes/admin.routes');
 
@@ -28,6 +29,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/swap-request', swapRoutes);
 app.use('/api/swaps', swapsRouter);
+app.use('/api/user-skills', userSkillRouter);
 app.use('/api/feedback', ratingRoutes);
 app.use('/api/admin', adminRoutes);
 

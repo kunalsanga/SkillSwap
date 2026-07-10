@@ -63,11 +63,14 @@ model Skill {
 }
 
 model UserSkill {
-  id        Int       @id @default(autoincrement())
-  userId    Int
-  skillId   Int
-  type      SkillType
-  createdAt DateTime  @default(now())
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  skillId     Int
+  type        SkillType
+  category    String?
+  experience  String?
+  description String?
+  createdAt   DateTime  @default(now())
 
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   skill     Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)

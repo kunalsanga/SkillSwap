@@ -92,7 +92,11 @@ const searchUsers = async (options = {}, isAdmin = false) => {
       skills: {
         select: {
           id: true,
+          skillId: true,
           type: true,
+          category: true,
+          experience: true,
+          description: true,
           skill: {
             select: {
               id: true,
@@ -140,7 +144,11 @@ const getUserById = async (userId) => {
       skills: {
         select: {
           id: true,
+          skillId: true,
           type: true,
+          category: true,
+          experience: true,
+          description: true,
           skill: {
             select: {
               id: true,
