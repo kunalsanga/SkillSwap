@@ -6,7 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 import { getUserProfile, updateUserProfile } from '../../services/userService';
 import { getUserFeedback } from '../../services/ratingService';
 import { addUserSkill, updateUserSkill, deleteUserSkill } from '../../services/skillService';
-import { sendRequest } from '../Swaps/api/swapsApi';
+import { sendRequest } from '../swaps/api/swapsApi';
 
 import ProfileHeader from '../../components/Profile/ProfileHeader';
 import ProfileStats from '../../components/Profile/ProfileStats';

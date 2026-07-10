@@ -12,8 +12,8 @@ import ProtectedRoute from './components/layouts/ProtectedRoute';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Dashboard from './pages/dashboard/Dashboard';
-import ProfilePage from './pages/Profile/ProfilePage';
-import SwapsPage from './pages/Swaps/SwapsPage';
+import ProfilePage from './pages/profile/ProfilePage';
+import SwapsPage from './pages/swaps/SwapsPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import NotFound from './pages/errors/NotFound';
 
