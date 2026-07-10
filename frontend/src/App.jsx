@@ -13,7 +13,7 @@ import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Dashboard from './pages/dashboard/Dashboard';
 import Profile from './pages/profile/Profile';
-import Swaps from './pages/swaps/Swaps';
+import SwapsPage from './pages/Swaps/SwapsPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import NotFound from './pages/errors/NotFound';
 
@@ -34,7 +34,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/:id" element={<Profile />} />
-            <Route path="/swaps" element={<Swaps />} />
+            <Route path="/swaps" element={<SwapsPage />} />
             
             {/* Admin Routes */}
             <Route element={<ProtectedRoute adminOnly={true} />}>
