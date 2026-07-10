@@ -12,8 +12,8 @@ import ProtectedRoute from './components/layouts/ProtectedRoute';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import Dashboard from './pages/dashboard/Dashboard';
-import Profile from './pages/profile/Profile';
-import Swaps from './pages/swaps/Swaps';
+import ProfilePage from './pages/profile/ProfilePage';
+import SwapsPage from './pages/swaps/SwapsPage';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import NotFound from './pages/errors/NotFound';
 
@@ -32,9 +32,9 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route element={<MainLayout />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/profile/:id" element={<Profile />} />
-            <Route path="/swaps" element={<Swaps />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/profile/:id" element={<ProfilePage />} />
+            <Route path="/swaps" element={<SwapsPage />} />
             
             {/* Admin Routes */}
             <Route element={<ProtectedRoute adminOnly={true} />}>

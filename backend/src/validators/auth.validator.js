@@ -82,7 +82,7 @@ const loginSchema = z
 const profileUpdateSchema = z
   .object({
     name: normalizeTrimmedString(z.string().min(1, 'Name cannot be empty.').max(100, 'Name must not exceed 100 characters.')).optional(),
-    profilePhoto: normalizeTrimmedString(z.string().min(1, 'Profile photo cannot be empty.').max(500, 'Profile photo must not exceed 500 characters.')).optional(),
+    profilePhoto: normalizeTrimmedString(z.string().min(1, 'Profile photo cannot be empty.').max(1048576, 'Profile photo must not exceed 1MB.')).optional(),
     bio: normalizeTrimmedString(z.string().min(1, 'Bio cannot be empty.').max(1000, 'Bio must not exceed 1000 characters.')).optional(),
     location: normalizeTrimmedString(z.string().min(1, 'Location cannot be empty.').max(120, 'Location must not exceed 120 characters.')).optional(),
     availability: normalizeTrimmedString(z.string().min(1, 'Availability cannot be empty.').max(120, 'Availability must not exceed 120 characters.')).optional(),
