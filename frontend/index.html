@@ -8,6 +8,11 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      window.onerror = function(message, source, lineno, colno, error) {
+        document.body.innerHTML = '<div style="color:red;padding:20px;font-family:monospace;"><h3>Runtime Error</h3><p>' + message + '</p><pre>' + (error && error.stack ? error.stack : '') + '</pre></div>';
+      };
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

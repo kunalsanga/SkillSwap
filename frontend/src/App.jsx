@@ -1,19 +1,53 @@
-import { Routes, Route } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+// Layouts
+import MainLayout from './components/layouts/MainLayout';
+import ProtectedRoute from './components/layouts/ProtectedRoute';
+
+// Pages
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import Dashboard from './pages/dashboard/Dashboard';
+import Profile from './pages/profile/Profile';
+import Swaps from './pages/swaps/Swaps';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import NotFound from './pages/errors/NotFound';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
-      <header className="bg-white shadow-sm p-4 sticky top-0 z-10">
-        <h1 className="text-2xl font-bold text-indigo-600">Skill Swap Platform</h1>
-      </header>
-      
-      <main className="container mx-auto p-4">
-        <Routes>
-          <Route path="/" element={<div className="text-center mt-20"><h2 className="text-4xl font-extrabold text-gray-800">Welcome to Skill Swap</h2><p className="mt-4 text-gray-600 text-lg">Exchange skills, learn together.</p></div>} />
-          {/* Add more routes here */}
-        </Routes>
-      </main>
-    </div>
+    <AuthProvider>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        
+        {/* Root redirect */}
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+        {/* Protected Routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route element={<MainLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/swaps" element={<Swaps />} />
+            
+            {/* Admin Routes */}
+            <Route element={<ProtectedRoute adminOnly={true} />}>
+              <Route path="/admin" element={<AdminDashboard />} />
+            </Route>
+          </Route>
+        </Route>
+
+        {/* 404 Route */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <ToastContainer position="top-right" autoClose={3000} />
+    </AuthProvider>
   );
 }
 

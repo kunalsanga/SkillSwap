@@ -34,7 +34,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: sh -c "npx prisma generate && npx prisma db push && npm run dev"
+    command: sh -c "npx prisma generate && npx prisma db push && npx prisma db seed && npm run dev"
 
   frontend:
     build:
@@ -50,6 +50,7 @@ services:
       - ./frontend/tailwind.config.js:/app/tailwind.config.js
     environment:
       - NODE_ENV=development
+      - VITE_DOCKER=true
     depends_on:
       - backend
 
