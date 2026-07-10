@@ -46,8 +46,11 @@ const Swaps = () => {
       </div>
 
       {loading ? (
-        <div className="flex justify-center items-center py-20">
-          <Loader className="h-8 w-8 text-indigo-600 animate-spin" />
+        <div className="flex justify-center items-center py-20 min-h-[400px]">
+          <div className="flex flex-col items-center">
+            <Loader className="h-10 w-10 text-indigo-600 animate-spin mb-4" />
+            <p className="text-gray-500 font-medium animate-pulse">Loading your swap requests...</p>
+          </div>
         </div>
       ) : swaps.length > 0 ? (
         <div className="space-y-4">
@@ -63,10 +66,12 @@ const Swaps = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-gray-100">
-          <ArrowRightLeft className="mx-auto h-12 w-12 text-gray-300 mb-4" />
-          <h3 className="text-lg font-medium text-gray-900">No requests yet</h3>
-          <p className="mt-1 text-gray-500">When you send or receive a swap request, it will appear here.</p>
+        <div className="text-center py-24 bg-white rounded-xl shadow-sm border border-gray-100 flex flex-col items-center justify-center">
+          <div className="h-20 w-20 bg-indigo-50 rounded-full flex items-center justify-center mb-6">
+            <ArrowRightLeft className="h-10 w-10 text-indigo-400" />
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900">No requests yet</h3>
+          <p className="mt-2 text-gray-500 max-w-sm">When you send or receive a skill swap request, it will appear here. Go to the Dashboard to find people to swap skills with!</p>
         </div>
       )}
     </div>

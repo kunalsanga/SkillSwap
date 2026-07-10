@@ -1,11 +1,31 @@
-import React from 'react';
-import { User, CheckCircle, XCircle, Clock } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, CheckCircle, XCircle, Clock, Star } from 'lucide-react';
 import SkillBadge from '../common/SkillBadge';
 import { useAuth } from '../../hooks/useAuth';
+import { createFeedback } from '../../services/ratingService';
+import { toast } from 'react-toastify';
 
 const SwapRequestCard = ({ request, onAccept, onReject, onComplete, onCancel }) => {
   const { user } = useAuth();
-  
+  const [rating, setRating] = useState(0);
+  const [feedback, setFeedback] = useState('');
+  const [isSubmittingRating, setIsSubmittingRating] = useState(false);
+  const [ratingSubmitted, setRatingSubmitted] = useState(false);
+
+  const handleRatingSubmit = async () => {
+    if (rating === 0) return;
+    setIsSubmittingRating(true);
+    try {
+      await createFeedback({ swapRequestId: request.id, rating, feedback });
+      toast.success('Thank you for your feedback!');
+      setRatingSubmitted(true);
+    } catch (error) {
+      toast.error(error.message || 'Failed to submit rating');
+    } finally {
+      setIsSubmittingRating(false);
+    }
+  };
+
   // Determine if current user is sender or receiver
   const isSender = request.senderId === user?.id;
   const otherUser = isSender ? request.receiver : request.sender;
@@ -99,6 +119,45 @@ const SwapRequestCard = ({ request, onAccept, onReject, onComplete, onCancel }) 
           </button>
         )}
       </div>
+
+      {request.status === 'COMPLETED' && !ratingSubmitted && (
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <h5 className="text-sm font-semibold text-gray-900 mb-2">Rate your experience with {otherUser?.name}</h5>
+          <div className="flex items-center space-x-1 mb-3">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                onClick={() => setRating(star)}
+                className={`focus:outline-none ${rating >= star ? 'text-yellow-400' : 'text-gray-300'} hover:text-yellow-400 transition-colors`}
+              >
+                <Star className="h-6 w-6 fill-current" />
+              </button>
+            ))}
+          </div>
+          <textarea
+            className="w-full text-sm px-3 py-2 border border-gray-200 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 mb-2"
+            placeholder="Write a review... (Optional)"
+            rows="2"
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+          />
+          <button
+            onClick={handleRatingSubmit}
+            disabled={isSubmittingRating || rating === 0}
+            className="w-full bg-indigo-600 text-white text-sm font-medium py-2 rounded-lg hover:bg-indigo-700 disabled:opacity-50 transition-colors"
+          >
+            {isSubmittingRating ? 'Submitting...' : 'Submit Review'}
+          </button>
+        </div>
+      )}
+      
+      {request.status === 'COMPLETED' && ratingSubmitted && (
+        <div className="mt-4 pt-4 border-t border-gray-100 text-center">
+          <p className="text-sm font-medium text-green-600 flex justify-center items-center gap-1">
+            <CheckCircle className="h-4 w-4" /> Rating Submitted!
+          </p>
+        </div>
+      )}
     </div>
   );
 };
