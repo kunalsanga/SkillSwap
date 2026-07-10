@@ -1,13 +1,136 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SkillType {
+  OFFERED
+  WANTED
+}
+
+enum SwapStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+model User {
+  id               Int            @id @default(autoincrement())
+  name             String
+  email            String         @unique
+  passwordHash     String
+  location         String?
+  profilePhoto     String?
+  availability     String?
+  isPublic         Boolean        @default(true)
+  isBanned         Boolean        @default(false)
+  role             Role           @default(USER)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  skills           UserSkill[]
+  sentRequests     SwapRequest[]  @relation("SentRequests")
+  receivedRequests SwapRequest[]  @relation("ReceivedRequests")
+  ratingsGiven     Rating[]       @relation("RatingsGiven")
+  ratingsReceived  Rating[]       @relation("RatingsReceived")
+  banHistory       BanHistory[]
+
+  @@index([email])
+}
+
+model Skill {
+  id               Int            @id @default(autoincrement())
+  name             String         @unique
+  users            UserSkill[]
+  offeredRequests  SwapRequest[]  @relation("OfferedSkillRequests")
+  wantedRequests   SwapRequest[]  @relation("WantedSkillRequests")
+
+  @@index([name])
+}
+
+model UserSkill {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  skillId   Int
+  type      SkillType
+  createdAt DateTime  @default(now())
+
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill     Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, skillId, type])
+  @@index([userId])
+  @@index([skillId])
+}
+
+model SwapRequest {
+  id             Int        @id @default(autoincrement())
+  senderId       Int
+  receiverId     Int
+  offeredSkillId Int
+  wantedSkillId  Int
+  status         SwapStatus @default(PENDING)
+  message        String?
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+
+  sender         User       @relation("SentRequests", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver       User       @relation("ReceivedRequests", fields: [receiverId], references: [id], onDelete: Cascade)
+  offeredSkill   Skill      @relation("OfferedSkillRequests", fields: [offeredSkillId], references: [id], onDelete: Cascade)
+  wantedSkill    Skill      @relation("WantedSkillRequests", fields: [wantedSkillId], references: [id], onDelete: Cascade)
+  ratings        Rating[]
+
+  @@index([status])
+  @@index([senderId])
+  @@index([receiverId])
+}
+
+model Rating {
+  id            Int         @id @default(autoincrement())
+  swapRequestId Int
+  giverId       Int
+  receiverId    Int
+  rating        Int
+  feedback      String?
+  createdAt     DateTime    @default(now())
+
+  swapRequest   SwapRequest @relation(fields: [swapRequestId], references: [id], onDelete: Cascade)
+  giver         User        @relation("RatingsGiven", fields: [giverId], references: [id], onDelete: Cascade)
+  receiver      User        @relation("RatingsReceived", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  @@unique([swapRequestId, giverId])
+  @@index([swapRequestId])
+  @@index([giverId])
+  @@index([receiverId])
+}
+
+model Announcement {
+  id        Int      @id @default(autoincrement())
+  title     String
+  message   String
+  createdAt DateTime @default(now())
+}
+
+model BanHistory {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  reason    String?
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

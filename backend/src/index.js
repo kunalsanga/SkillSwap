@@ -18,7 +18,16 @@ app.use(morgan('combined', { stream: { write: message => logger.info(message.tri
 
 // Routes Placeholder
 const authRoutes = require('./routes/auth.routes');
+const userRoutes = require('./routes/user.routes');
+const swapRoutes = require('./routes/swap.routes');
+const ratingRoutes = require('./routes/rating.routes');
+const adminRoutes = require('./routes/admin.routes');
+
 app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/swap-request', swapRoutes);
+app.use('/api/feedback', ratingRoutes);
+app.use('/api/admin', adminRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {
