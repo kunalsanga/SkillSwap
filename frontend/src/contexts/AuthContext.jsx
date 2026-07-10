@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import { login, register } from '../services/authService';
+import { login, register, getMe, updateProfile } from '../services/authService';
 
 export const AuthContext = createContext();
 
@@ -8,17 +8,26 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Attempt to load user from local storage
-    const storedToken = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-
-    if (storedToken && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch (e) {
-        setUser(null);
+    const fetchUser = async () => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        try {
+          const res = await getMe();
+          if (res.success) {
+            setUser(res.data);
+            localStorage.setItem('user', JSON.stringify(res.data));
+          } else {
+            setUser(null);
+          }
+        } catch (error) {
+          console.error("Failed to fetch user profile", error);
+          setUser(null);
+        }
       }
-    }
+      setLoading(false);
+    };
+
+    fetchUser();
     
     // Listen for 401s from the api interceptor
     const handleAuthError = () => {
@@ -79,6 +88,23 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateUser = async (profileData) => {
+    try {
+      const res = await updateProfile(profileData);
+      if (res.success) {
+        setUser(res.data);
+        localStorage.setItem('user', JSON.stringify(res.data));
+        return res;
+      }
+      throw new Error(res.message || 'Profile update failed');
+    } catch (error) {
+      if (error.response && error.response.data) {
+        throw new Error(error.response.data.message || 'Profile update failed');
+      }
+      throw error;
+    }
+  };
+
   const logoutUser = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
@@ -86,7 +112,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, loginUser, registerUser, logoutUser }}>
+    <AuthContext.Provider value={{ user, loading, loginUser, registerUser, logoutUser, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

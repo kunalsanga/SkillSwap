@@ -11,7 +11,10 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(helmet());
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
@@ -24,6 +27,7 @@ const swapsRouter = require('./routes/swaps');
 const userSkillRouter = require('./routes/userSkill.routes');
 const ratingRoutes = require('./routes/rating.routes');
 const adminRoutes = require('./routes/admin.routes');
+const skillRoutes = require('./routes/skill.routes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -32,6 +36,7 @@ app.use('/api/swaps', swapsRouter);
 app.use('/api/user-skills', userSkillRouter);
 app.use('/api/feedback', ratingRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/skills', skillRoutes);
 
 // Health Check
 app.get('/health', (req, res) => {

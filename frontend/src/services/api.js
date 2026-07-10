@@ -1,7 +1,15 @@
 import axios from 'axios';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+let API_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || '/api';
 
+if (API_URL !== '/api') {
+  if (API_URL.endsWith('/')) {
+    API_URL = API_URL.slice(0, -1);
+  }
+  if (!API_URL.endsWith('/api')) {
+    API_URL += '/api';
+  }
+}
 const api = axios.create({
   baseURL: API_URL,
   headers: {
