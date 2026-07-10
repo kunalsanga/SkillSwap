@@ -32,6 +32,7 @@ model User {
   name             String
   email            String         @unique
   passwordHash     String
+  bio              String?
   location         String?
   profilePhoto     String?
   availability     String?
