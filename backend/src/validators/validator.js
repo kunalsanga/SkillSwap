@@ -1,4 +1,3 @@
-const logger = require('../utils/logger');
 
 /**
  * Validate that required fields are present and not empty.
